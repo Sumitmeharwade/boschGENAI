@@ -5,7 +5,7 @@ langchain==0.1.7
 langchain-community==0.0.20
 langchain-core==0.1.23
 langsmith==0.0.87
-faiss-cpu==1.7.2
+faiss-cpu==1.7.4
 google-ai-generativelanguage==0.6.4
 google-api-core==2.19.0
 google-api-python-client==2.129.0
