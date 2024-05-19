@@ -9,8 +9,7 @@ from DS_Modules.user_input import handle_userinput
 def main():
     load_dotenv()
     
-    st.set_page_config(page_title="Chabot for PDFs",
-                       page_icon=":🤖")
+    st.set_page_config(page_title="Chatbot for PDFs", page_icon=":🤖")
     st.write(css, unsafe_allow_html=True)
 
     if "conversation" not in st.session_state:
@@ -25,18 +24,16 @@ def main():
 
     with st.sidebar:
         st.subheader("Your documents")
-        pdf_docs = st.file_uploader(
-            "Upload your PDFs here and click on 'Process'")
+        pdf_docs = st.file_uploader("Upload your PDFs here and click on 'Process'", type="pdf")
         button = st.button("Process")
         if button:
-            with st.spinner("Processing.Please Wait..."):
-                
-                vectorstore = retrieve_or_embed(pdf_docs)
-                st.success(vectorstore)
-                st.button("Processing Done.Please Ask Question Now (Click to hide)", key="processed_button")
-
-                st.session_state.conversation = get_conversation_chain(
-                    vectorstore)
+            if pdf_docs is not None:
+                with st.spinner("Processing... Please Wait..."):
+                    vectorstore = retrieve_or_embed(pdf_docs)
+                    st.success("Processing Done. Please ask a question now.")
+                    st.session_state.conversation = get_conversation_chain(vectorstore)
+            else:
+                st.error("Please upload a PDF document.")
 
 if __name__ == '__main__':
     main()

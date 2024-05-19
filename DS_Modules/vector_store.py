@@ -14,22 +14,20 @@ def get_vectorstore(text_chunks):
         print(f"An error occurred while handling vectorstore: {e}")
         return None 
 
-
-
 def retrieve_or_embed(pdf):
     pdf_name = pdf.name.split('.')[0]
-    print(pdf_name)
     index_store = f"faiss_indexes/{pdf_name}.faiss"
-    print("File Directory is :",index_store)
     
     if os.path.exists(index_store):
-        print("File Already Exist")
         embeddings = HuggingFaceInstructEmbeddings(model_name="all-MiniLM-L6-v2")
-        return FAISS.load_local(index_store,embeddings=embeddings)
+        return FAISS.load_local(index_store, embeddings=embeddings)
     else:
-        print("New File Extraction Begins")
         raw_text = get_pdf_text(pdf)
-        text_chunks = get_text_chunks(raw_text)
-        vectorstore = get_vectorstore(text_chunks)
-        vectorstore.save_local(folder_path=index_store)
-        return vectorstore
+        if raw_text is not None:
+            text_chunks = get_text_chunks(raw_text)
+            vectorstore = get_vectorstore(text_chunks)
+            if vectorstore is not None:
+                vectorstore.save_local(folder_path=index_store)
+            return vectorstore
+        else:
+            return None
