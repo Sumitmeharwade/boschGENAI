@@ -1,0 +1,19 @@
+step 1:
+
+Install the requirements.txt
+
+step 2:
+
+add the GOOGLE_API_KEY IN .env file (for using the Google PaLM), currently our api key is already present in the .env file which can be used to run.
+
+step 3:
+
+run the app using "streamlit run app.py" command
+
+step 4:
+
+add the pdf document and click on process document
+
+step 5:
+
+enter the question and get the retrieved answer from the pdf.
