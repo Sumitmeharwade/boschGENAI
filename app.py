@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from DS_Modules.vector_store import retrieve_or_embed
 from DS_Modules.chatbot_model import get_conversation_chain
 from DS_Modules.user_input import handle_userinput
+from DS_Modules.pdf_reader import extract_images_from_pdf
 
 def main():
     load_dotenv()
@@ -24,16 +25,24 @@ def main():
 
     with st.sidebar:
         st.subheader("Your documents")
-        pdf_docs = st.file_uploader("Upload your PDFs here and click on 'Process'", type="pdf")
+        pdf_docs = st.file_uploader("Upload your PDFs here and click on 'Process'")
         button = st.button("Process")
         if button:
-            if pdf_docs is not None:
-                with st.spinner("Processing... Please Wait..."):
+            with st.spinner("Processing... Please Wait..."):
+                if pdf_docs:
                     vectorstore = retrieve_or_embed(pdf_docs)
+                    image_count = extract_images_from_pdf(pdf_docs)
+                    
                     st.success("Processing Done. Please ask a question now.")
                     st.session_state.conversation = get_conversation_chain(vectorstore)
-            else:
-                st.error("Please upload a PDF document.")
+                    
+                    st.sidebar.subheader("Extracted Images")
+                    if image_count:
+                        st.sidebar.write(f"Extracted {image_count} images from the PDF.")
+                        for img_file in os.listdir("extracted_images"):
+                            st.sidebar.image(os.path.join("extracted_images", img_file))
+                    else:
+                        st.sidebar.write("No images found in the PDF.")
 
 if __name__ == '__main__':
     main()
