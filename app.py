@@ -31,7 +31,7 @@ def main():
             with st.spinner("Processing... Please Wait..."):
                 if pdf_docs:
                     vectorstore = retrieve_or_embed(pdf_docs)
-                    image_count = extract_images_from_pdf(pdf_docs)
+                    context,image_count = extract_images_from_pdf(pdf_docs)
                     
                     st.success("Processing Done. Please ask a question now.")
                     st.session_state.conversation = get_conversation_chain(vectorstore)

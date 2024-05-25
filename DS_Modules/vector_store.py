@@ -3,6 +3,7 @@ from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain_community.vectorstores import FAISS
 from DS_Modules.text_splitter import get_text_chunks
 from DS_Modules.pdf_reader import get_pdf_text, extract_images_from_pdf
+import numpy as np
 
 def get_vectorstore(text_chunks, image_embeddings):
     try:
@@ -27,11 +28,14 @@ def retrieve_or_embed(pdf):
     else:
         raw_text = get_pdf_text(pdf)
         text_chunks = get_text_chunks(raw_text)
-        image_embeddings, image_paths = extract_images_from_pdf(pdf)
-        
-        if image_embeddings is None or image_paths is None:
-            return None
-
-        vectorstore = get_vectorstore(text_chunks, image_embeddings)
-        vectorstore.save_local(folder_path=index_store)
+        image_contexts,img_count = extract_images_from_pdf(pdf)
+        print(image_contexts)
+        # save_image_contexts(image_contexts)
+        image_filenames=[]
+        if image_contexts is not None:
+            image_filenames = [image["filename"] for image in image_contexts]
+            
+        vectorstore = get_vectorstore(text_chunks, image_filenames)  # Pass only image filenames
+        if vectorstore is not None:
+            vectorstore.save_local(folder_path=index_store)
         return vectorstore
